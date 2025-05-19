@@ -1,14 +1,19 @@
 from fastapi import APIRouter, Depends, HTTPException
+from passlib.context import CryptContext
 from sqlalchemy.orm import Session
+
 from database.session import get_db
 from database.models import User
-from database.shemas import UserCreate
+from database.shemas import UserCreate, TokenResponse
+from utils.jwt import JWT
+from config import settings
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+jwt = JWT(secret_key=settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 
 
-@router.post("/register")
-def register(register_user: UserCreate, db: Session = Depends(get_db)) -> User:
+@router.post("/register", response_model=TokenResponse)
+def register(register_user: UserCreate, db: Session = Depends(get_db)) -> TokenResponse:
     """
     Обрабатывает регистрацию пользователя.
 
@@ -26,8 +31,12 @@ def register(register_user: UserCreate, db: Session = Depends(get_db)) -> User:
     """
     if db.query(User).filter(User.email == register_user.email).first():
         raise HTTPException(status_code=400, detail="Email already exists")
-    user = User(**register_user.dict())
+
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    hashed_password = pwd_context.hash(register_user.password)
+    user = User(email=register_user.email, password_hash=hashed_password)
     db.add(user)
     db.commit()
     db.refresh(user)
-    return user
+    response = TokenResponse(token=jwt.generate_token({"email": user.email, "password": user.password_hash}))
+    return response
