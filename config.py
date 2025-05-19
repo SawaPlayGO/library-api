@@ -1,30 +1,40 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+from utils.logger import Logger
+
+load_dotenv('.env')
+
 
 class Settings:
     """Класс для хранения настроек приложения"""
-    PROJECT_NAME: str = "Library API"
 
-    # Настройки json web token
-    JWT_SECRET_KEY: str = os.getenv('JWT_SECRET_KEY')
-    JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM", "HS256")
-    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", 30))
+    def __init__(self):
+        self.PROJECT_NAME = "Library API"
+        self.LOG_FILE = bool(os.getenv("LOG_FILE", "app.log"))
+        self.logger = Logger.get_logger(__name__, log_to_file=self.LOG_FILE)
 
-    # База данных
-    DB_HOST: str = os.getenv("DB_HOST", "localhost")
-    DB_PORT: str = os.getenv("DB_PORT", "5432")
-    DB_NAME: str = os.getenv("DB_NAME", "library")
-    DB_USER: str = os.getenv("DB_USER", "postgres")
-    DB_PASSWORD: str = os.getenv("DB_PASSWORD", "password")
+        # JWT
+        self.JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "secret")
+        self.JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
+        self.JWT_ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", 30))
 
-    SQLALCHEMY_DATABASE_URL = (
-        f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-    )
+        # БД
+        self.DB_HOST = os.getenv("DB_HOST", "localhost")
+        self.DB_PORT = os.getenv("DB_PORT", "5432")
+        self.DB_NAME = os.getenv("DB_NAME", "library")
+        self.DB_USER = os.getenv("DB_USER", "postgres")
+        self.DB_PASSWORD = os.getenv("DB_PASSWORD", "password")
 
-    # Настройки логирования SQL запросов
-    ECHO_SQL: bool = bool(os.getenv("ECHO_SQL", False))
+        self.SQLALCHEMY_DATABASE_URL = (
+            f"postgresql+psycopg2://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        )
+
+        # SQL логирование
+        self.ECHO_SQL = bool(os.getenv("ECHO_SQL", False))
+
+        # Пример логирования
+        self.logger.info(f"SQLALCHEMY_DATABASE_URL: {self.SQLALCHEMY_DATABASE_URL}")
+
 
 settings = Settings()
-
