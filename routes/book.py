@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from utils.dependencies import get_user
 from database.models import Book
 from database.session import get_db
-from database.shemas import BookCreate, BookResponce, BookUpdate
+from database.shemas import BookCreate, BookResponse, BookUpdate
 
 router = APIRouter(prefix="/book", tags=["book"])
 
@@ -34,8 +34,8 @@ def create_book(book: BookCreate, db: Session = Depends(get_db), user: dict = De
 
     return {"message": "Книга успешно создана", "book_id": new_book.id}
 
-@router.get('/read/{book_id}', response_model=BookResponce)
-def read_book(book_id: int, db: Session = Depends(get_db), user: dict = Depends(get_user)) -> BookResponce:
+@router.get('/read/{book_id}', response_model=BookResponse)
+def read_book(book_id: int, db: Session = Depends(get_db), user: dict = Depends(get_user)) -> BookResponse:
     """
     Получение информации о книге.
 
@@ -50,7 +50,7 @@ def read_book(book_id: int, db: Session = Depends(get_db), user: dict = Depends(
     book = db.query(Book).filter(Book.id == book_id).first()
     if book is None:
         raise HTTPException(status_code=404, detail="Книга не найдена")
-    return BookResponce(**book.__dict__)
+    return BookResponse(**book.__dict__)
 
 @router.put('/update/{book_id}')
 def update_book(book_id: int, book: BookUpdate, db: Session = Depends(get_db), user: dict = Depends(get_user)) -> dict:
