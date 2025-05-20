@@ -5,12 +5,9 @@ from sqlalchemy.orm import Session
 from database.session import get_db
 from database.models import User
 from database.shemas import UserCreate, TokenResponse
-from utils.jwt import JWT
-from config import settings
+from utils.jwt import jwt_handler
 
 router = APIRouter(prefix="/auth", tags=["auth"])
-jwt = JWT(secret_key=settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
-
 
 @router.post("/register", response_model=TokenResponse)
 def register(register_user: UserCreate, db: Session = Depends(get_db)) -> TokenResponse:
@@ -38,7 +35,7 @@ def register(register_user: UserCreate, db: Session = Depends(get_db)) -> TokenR
     db.add(user)
     db.commit()
     db.refresh(user)
-    response = TokenResponse(token=jwt.generate_token({"email": user.email, "password": user.password_hash}))
+    response = TokenResponse(token=jwt_handler.generate_token({"email": user.email, "password": user.password_hash}))
     return response
 
 
@@ -68,5 +65,5 @@ def login(login_user: UserCreate, db: Session = Depends(get_db)) -> TokenRespons
     if not pwd_context.verify(secret=login_user.password, hash=str(user.password_hash)):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
-    response = TokenResponse(token=jwt.generate_token({"email": user.email, "password": user.password_hash}))
+    response = TokenResponse(token=jwt_handler.generate_token({"email": user.email, "password": user.password_hash}))
     return response
