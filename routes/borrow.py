@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -6,7 +7,7 @@ from sqlalchemy.orm import Session
 from utils.dependencies import get_user
 from database.models import BorrowedBooks, Reader, Book
 from database.session import get_db
-from database.shemas import BorrowCreate
+from database.shemas import BorrowCreate, BorrowBookResponse
 
 router = APIRouter(prefix="/borrow", tags=["borrow"])
 
@@ -66,3 +67,36 @@ def returning(borrow: BorrowCreate, db: Session = Depends(get_db), user: dict = 
     book.copies += 1  # type: ignore
     db.commit()
     return {"message": "Книга успешно возвращена"}
+
+@router.get("/{reader_id}/borrows", response_model=List[BorrowBookResponse])
+def my_borrows(reader_id: int, db: Session = Depends(get_db)) -> List[BorrowBookResponse]:
+    """
+    Получение списка всех книг, выданных авторизованному читателю (и еще не возвращенных).
+
+    Аргументы:
+        reader_id (int): Идентификатор читателя.
+        db (Session): Сессия базы данных.
+
+    Возвращает:
+        List[BorrowBookResponse]: Список выданных книг.
+    """
+    borrowed_books = db.query(BorrowedBooks).filter(
+        BorrowedBooks.reader_id == reader_id,
+        BorrowedBooks.return_date == None
+    ).all()
+    
+    books = []
+    for borrowed_book in borrowed_books:
+        book = db.query(Book).filter(Book.id == borrowed_book.book_id).first()
+        if book is not None:
+            books.append(BorrowBookResponse(
+                id=book.id, # type: ignore
+                title=book.title, # type: ignore
+                author=book.author, # type: ignore
+                year=book.year, # type: ignore
+                isbn=book.isbn, # type: ignore
+                borrow_date=borrowed_book.borrow_date.strftime("%Y-%m-%d %H:%M:%S")
+            ))
+    
+    return books
+
