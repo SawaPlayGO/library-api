@@ -19,18 +19,19 @@ class TokenResponse(BaseModel):
 class BookCreate(BaseModel):
     title: str
     author: str
-    year: int = Field(default=None, allow_none=True) # type: ignore
-    isbn: str = Field(default=None, allow_none=True) # type: ignore
+    year: int = Field(default=None, allow_none=True)  # type: ignore
+    isbn: str = Field(default=None, allow_none=True)  # type: ignore
     copies: int
 
     class Config:
         from_attributes = True
 
-class BookResponce(BaseModel):
+
+class BookResponse(BaseModel):
     title: str
     author: str
-    year: int = Field(default=None, allow_none=True) # type: ignore
-    isbn: str = Field(default=None, allow_none=True) # type: ignore
+    year: int = Field(default=None, allow_none=True)  # type: ignore
+    isbn: str = Field(default=None, allow_none=True)  # type: ignore
     copies: int
 
     class Config:
@@ -38,8 +39,27 @@ class BookResponce(BaseModel):
 
 
 class BookUpdate(BaseModel):
-    title: str = Field(default=None, allow_none=True) # type: ignore
-    author: str = Field(default=None, allow_none=True) # type: ignore
-    year: int = Field(default=None, allow_none=True) # type: ignore
-    isbn: str = Field(default=None, allow_none=True) # type: ignore
-    copies: int = Field(default=None, allow_none=True) # type: ignore
+    title: str = Field(default=None, allow_none=True)  # type: ignore
+    author: str = Field(default=None, allow_none=True)  # type: ignore
+    year: int = Field(default=None, allow_none=True)  # type: ignore
+    isbn: str = Field(default=None, allow_none=True)  # type: ignore
+    copies: int = Field(default=None, allow_none=True)  # type: ignore
+
+    class Config:
+        from_attributes = True
+
+
+class ReaderCreate(BaseModel):
+    name: str
+    email: str
+
+    class Config:
+        from_attributes = True
+
+
+class ReaderUpdate(BaseModel):
+    name: str = Field(default=None, allow_none=True)  # type: ignore
+    email: str = Field(default=None, allow_none=True)  # type: ignore
+
+    class Config:
+        from_attributes = True
