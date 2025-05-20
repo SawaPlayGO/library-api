@@ -33,6 +33,9 @@ class Settings:
         # SQL логирование
         self.ECHO_SQL = bool(os.getenv("ECHO_SQL", False))
 
+        # Лимит использования API (/books, /auth/..)
+        self.RATE_LIMITER = str(os.getenv("RATE_LIMITER", "10"))
+
         # Пример логирования
         self.logger.info(f"SQLALCHEMY_DATABASE_URL: {self.SQLALCHEMY_DATABASE_URL}")
 

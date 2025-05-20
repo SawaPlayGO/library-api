@@ -1,12 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException
+from typing import List
+
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from utils.dependencies import get_user
 from database.models import Book
 from database.session import get_db
 from database.shemas import BookCreate, BookResponse, BookUpdate
+from utils.rate_limiter import limiter
+from config import settings
 
 router = APIRouter(prefix="/book", tags=["book"])
+
 
 @router.post("/create")
 def create_book(book: BookCreate, db: Session = Depends(get_db), user: dict = Depends(get_user)) -> dict:
@@ -103,3 +108,18 @@ def delete_book(book_id: int, db: Session = Depends(get_db), user: dict = Depend
     db.commit()
     return {"message": "Книга успешно удалена"}
 
+@router.get('/all')
+@limiter.limit(f"{settings.RATE_LIMITER}/minute")
+def get_books(request: Request, db: Session = Depends(get_db)) -> List[BookResponse]:
+    """
+    Получение списка всех книг.
+
+    Аргументы:
+        db (Session): Сессия базы данных.
+        user (dict): Авторизованный пользователь (JWT).
+
+    Возвращает:
+        List[BookResponse]: Список книг.
+    """
+    books = db.query(Book).all()
+    return [BookResponse(**book.__dict__) for book in books]

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
@@ -6,11 +6,14 @@ from database.session import get_db
 from database.models import User
 from database.shemas import UserCreate, TokenResponse
 from utils.jwt import jwt_handler
+from utils.rate_limiter import limiter
+from config import settings
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=TokenResponse)
-def register(register_user: UserCreate, db: Session = Depends(get_db)) -> TokenResponse:
+@limiter.limit(f"{settings.RATE_LIMITER}/minute")
+def register(request: Request, register_user: UserCreate, db: Session = Depends(get_db)) -> TokenResponse:
     """
     Обрабатывает регистрацию пользователя.
 
@@ -40,7 +43,8 @@ def register(register_user: UserCreate, db: Session = Depends(get_db)) -> TokenR
 
 
 @router.post("/login", response_model=TokenResponse)
-def login(login_user: UserCreate, db: Session = Depends(get_db)) -> TokenResponse:
+@limiter.limit(f"{settings.RATE_LIMITER}/minute")
+def login(request: Request, login_user: UserCreate, db: Session = Depends(get_db)) -> TokenResponse:
     """
     Обрабатывает вход пользователя.
 
