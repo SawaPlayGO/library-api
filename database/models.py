@@ -57,3 +57,27 @@ class Book(Base):
 
     def __repr__(self):
         return f'<Book(title={self.title!r}, author={self.author!r}, year={self.year!r}, isbn={self.isbn!r}, copies={self.copies!r})>'
+    
+
+class Reader(Base):
+    """
+    Модель читателя для базы данных.
+
+    Атрибуты:
+        id (int): Уникальный идентификатор читателя.
+        name (str): Имя читателя, обязательное поле.
+        email (str): Электронная почта читателя, уникальное поле, обязательное поле.
+
+    Методы:
+        __repr__(): Возвращает строковое представление объекта читателя.
+    """
+
+    __tablename__ = 'readers'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)
+    email = Column(String, unique=True, nullable=False)
+
+    def __repr__(self):
+        return f'<Reader(name={self.name!r}, email={self.email!r})>'
+
