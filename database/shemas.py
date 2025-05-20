@@ -63,3 +63,7 @@ class ReaderUpdate(BaseModel):
 
     class Config:
         from_attributes = True
+
+class BorrowCreate(BaseModel):
+    reader_id: int
+    book_id: int

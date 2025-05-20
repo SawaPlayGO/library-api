@@ -1,8 +1,10 @@
 from fastapi import FastAPI
-from routes import auth, book
+from routes import auth, book, reader, borrow
 
 app = FastAPI()
 
-app.include_router(auth.router)
-app.include_router(book.router)
+routers = [auth.router, book.router, reader.router, borrow.router]
+
+for router in routers:
+    app.include_router(router)
 
