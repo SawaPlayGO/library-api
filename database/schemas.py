@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel, EmailStr, Field
 
 
@@ -31,8 +32,9 @@ class BookResponse(BaseModel):
     id: int
     title: str
     author: str
-    year: int = Field(default=None, allow_none=True)  # type: ignore
-    isbn: str = Field(default=None, allow_none=True)  # type: ignore
+    description: Optional[str] = None
+    year: Optional[int] = None
+    isbn: Optional[str] = None
     copies: int
 
     class Config:
@@ -40,11 +42,12 @@ class BookResponse(BaseModel):
 
 
 class BookUpdate(BaseModel):
-    title: str = Field(default=None, allow_none=True)  # type: ignore
-    author: str = Field(default=None, allow_none=True)  # type: ignore
-    year: int = Field(default=None, allow_none=True)  # type: ignore
-    isbn: str = Field(default=None, allow_none=True)  # type: ignore
-    copies: int = Field(default=None, allow_none=True)  # type: ignore
+    title: Optional[str] = None
+    author: Optional[str] = None
+    description: Optional[str] = None
+    year: Optional[int] = None
+    isbn: Optional[str] = None
+    copies: Optional[int] = None
 
     class Config:
         from_attributes = True
@@ -59,8 +62,8 @@ class ReaderCreate(BaseModel):
 
 
 class ReaderUpdate(BaseModel):
-    name: str = Field(default=None, allow_none=True)  # type: ignore
-    email: str = Field(default=None, allow_none=True)  # type: ignore
+    name: Optional[str] = None
+    email: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -77,8 +80,9 @@ class BorrowBookResponse(BaseModel):
     id: int
     title: str
     author: str
-    year: int = Field(default=None, allow_none=True)  # type: ignore
-    isbn: str = Field(default=None, allow_none=True)  # type: ignore
+    description: Optional[str] = None
+    year: Optional[int] = None
+    isbn: Optional[str] = None
     borrow_date: str
 
     class Config:

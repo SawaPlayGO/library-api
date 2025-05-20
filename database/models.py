@@ -39,6 +39,7 @@ class Book(Base):
         id (int): Уникальный идентификатор книги.
         title (str): Название книги, обязательное поле.
         author (str): Автор книги, обязательное поле.
+        description (str): Описание книги, необязательное поле.
         year (int): Год издания книги, необязательное поле.
         isbn (str): ISBN книги, уникальное поле, необязательное поле.
         copies (int): Количество экземпляров книги, по умолчанию 1, необязательное поле.
@@ -51,12 +52,13 @@ class Book(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String, nullable=False)
     author = Column(String, nullable=False)
+    description = Column(String, nullable=True)
     year = Column(Integer, nullable=True)
     isbn = Column(String, unique=True, nullable=True)
     copies = Column(Integer, nullable=False, default=1, server_default='1')
 
     def __repr__(self):
-        return f'<Book(title={self.title!r}, author={self.author!r}, year={self.year!r}, isbn={self.isbn!r}, copies={self.copies!r})>'
+        return f'<Book(title={self.title!r}, author={self.author!r}, description={self.description!r}, year={self.year!r}, isbn={self.isbn!r}, copies={self.copies!r})>'
     
 
 class Reader(Base):

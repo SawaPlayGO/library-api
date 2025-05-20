@@ -90,11 +90,12 @@ def my_borrows(reader_id: int, db: Session = Depends(get_db)) -> List[BorrowBook
         book = db.query(Book).filter(Book.id == borrowed_book.book_id).first()
         if book is not None:
             books.append(BorrowBookResponse(
-                id=book.id, # type: ignore
-                title=book.title, # type: ignore
-                author=book.author, # type: ignore
-                year=book.year, # type: ignore
-                isbn=book.isbn, # type: ignore
+                id=book.id,  # type: ignore
+                title=book.title,  # type: ignore
+                author=book.author,  # type: ignore
+                description=book.description,  # type: ignore
+                year=book.year,  # type: ignore
+                isbn=book.isbn,  # type: ignore
                 borrow_date=borrowed_book.borrow_date.strftime("%Y-%m-%d %H:%M:%S")
             ))
     

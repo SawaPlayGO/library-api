@@ -55,7 +55,7 @@ def read_book(book_id: int, db: Session = Depends(get_db), user: dict = Depends(
     book = db.query(Book).filter(Book.id == book_id).first()
     if book is None:
         raise HTTPException(status_code=404, detail="Книга не найдена")
-    return BookResponse(**book.__dict__)
+    return BookResponse(**{**book.__dict__})
 
 @router.put('/update/{book_id}')
 def update_book(book_id: int, book: BookUpdate, db: Session = Depends(get_db), user: dict = Depends(get_user)) -> dict:
@@ -79,6 +79,8 @@ def update_book(book_id: int, book: BookUpdate, db: Session = Depends(get_db), u
         db_book.title = book.title # type: ignore
     if book.author is not None:
         db_book.author = book.author # type: ignore
+    if book.description is not None:
+        db_book.description = book.description # type: ignore
     if book.year is not None:
         db_book.year = book.year # type: ignore
     if book.isbn is not None:
