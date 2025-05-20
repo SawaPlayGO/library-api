@@ -28,6 +28,7 @@ class BookCreate(BaseModel):
 
 
 class BookResponse(BaseModel):
+    id: int
     title: str
     author: str
     year: int = Field(default=None, allow_none=True)  # type: ignore
