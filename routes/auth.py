@@ -40,3 +40,33 @@ def register(register_user: UserCreate, db: Session = Depends(get_db)) -> TokenR
     db.refresh(user)
     response = TokenResponse(token=jwt.generate_token({"email": user.email, "password": user.password_hash}))
     return response
+
+
+@router.post("/login", response_model=TokenResponse)
+def login(login_user: UserCreate, db: Session = Depends(get_db)) -> TokenResponse:
+    """
+    Обрабатывает вход пользователя.
+
+    Проверяет учетные данные пользователя на основе предоставленных данных входа.
+
+    Аргументы:
+        login_user (UserCreate): Данные входа пользователя.
+        db (Session): Сессия базы данных. По умолчанию Depends(get_db).
+
+    Возвращает:
+        User: Информация о пользователе.
+
+    Вызывает исключение:
+        HTTPException: Если предоставленная электронная почта не существует.
+    """
+    user = db.query(User).filter(User.email == login_user.email).first()
+
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    if not pwd_context.verify(secret=login_user.password, hash=str(user.password_hash)):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+
+    response = TokenResponse(token=jwt.generate_token({"email": user.email, "password": user.password_hash}))
+    return response
