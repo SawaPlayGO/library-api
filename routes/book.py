@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from utils.dependencies import get_user
 from database.models import Book
 from database.session import get_db
-from database.shemas import BookCreate, BookResponse, BookUpdate
+from database.schemas import BookCreate, BookResponse, BookUpdate
 from utils.rate_limiter import limiter
 from config import settings
 

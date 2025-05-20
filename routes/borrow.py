@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from utils.dependencies import get_user
 from database.models import BorrowedBooks, Reader, Book
 from database.session import get_db
-from database.shemas import BorrowCreate, BorrowBookResponse
+from database.schemas import BorrowCreate, BorrowBookResponse
 
 router = APIRouter(prefix="/borrow", tags=["borrow"])
 

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from utils.dependencies import get_user
 from database.models import Reader
 from database.session import get_db
-from database.shemas import ReaderCreate, ReaderUpdate
+from database.schemas import ReaderCreate, ReaderUpdate
 
 router = APIRouter(prefix="/reader", tags=["reader"])
 

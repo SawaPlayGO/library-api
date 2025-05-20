@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from database.session import get_db
 from database.models import User
-from database.shemas import UserCreate, TokenResponse
+from database.schemas import UserCreate, TokenResponse
 from utils.jwt import jwt_handler
 from utils.rate_limiter import limiter
 from config import settings
