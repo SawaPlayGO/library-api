@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 from .session import Base
@@ -81,3 +81,28 @@ class Reader(Base):
     def __repr__(self):
         return f'<Reader(name={self.name!r}, email={self.email!r})>'
 
+
+class BorrowedBooks(Base):
+    """
+    Модель для хранения информации о выданных книгах.
+
+    Атрибуты:
+        id (int): Уникальный идентификатор выдачи книги.
+        book_id (int): Идентификатор выданной книги.
+        reader_id (int): Идентификатор читателя, получившего книгу.
+        borrow_date (datetime): Дата выдачи книги.
+        return_date (datetime): Дата возврата книги (изначально None).
+
+    Методы:
+        __repr__(): Возвращает строковое представление объекта выдачи книги.
+    """
+    __tablename__ = 'borrowed_books'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    book_id = Column(Integer, ForeignKey('books.id'), nullable=False)
+    reader_id = Column(Integer, ForeignKey('readers.id'), nullable=False)
+    borrow_date = Column(DateTime, default=datetime.utcnow, nullable=False)
+    return_date = Column(DateTime, nullable=True)
+
+    def __repr__(self):
+        return f'<BorrowedBooks(book_id={self.book_id!r}, reader_id={self.reader_id!r}, borrow_date={self.borrow_date!r}, return_date={self.return_date!r})>'
