@@ -6,26 +6,23 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 class TokenResponse(BaseModel):
     token: str
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 class BookCreate(BaseModel):
     title: str
     author: str
-    year: int = Field(default=None, allow_none=True)  # type: ignore
-    isbn: str = Field(default=None, allow_none=True)  # type: ignore
+    year: Optional[int] = Field(default=None, json_schema_extra={"nullable": True})
+    isbn: Optional[str] = Field(default=None, json_schema_extra={"nullable": True})
     copies: int
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 class BookResponse(BaseModel):
@@ -37,8 +34,7 @@ class BookResponse(BaseModel):
     isbn: Optional[str] = None
     copies: int
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 class BookUpdate(BaseModel):
@@ -49,31 +45,28 @@ class BookUpdate(BaseModel):
     isbn: Optional[str] = None
     copies: Optional[int] = None
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 class ReaderCreate(BaseModel):
     name: str
     email: str
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 class ReaderUpdate(BaseModel):
     name: Optional[str] = None
     email: Optional[str] = None
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
+
 
 class BorrowCreate(BaseModel):
     reader_id: int
     book_id: int
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 class BorrowBookResponse(BaseModel):
@@ -85,5 +78,5 @@ class BorrowBookResponse(BaseModel):
     isbn: Optional[str] = None
     borrow_date: str
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
+
