@@ -13,13 +13,11 @@ def get_user(authorization: Optional[str] = Header(default=None)) -> dict:
     :raises HTTPException: 401, если пользователь не авторизован
     """
     if authorization is None or not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing or invalid token")
-
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Необходима авторизация")
     token = authorization.split(" ")[1]
     try:
         payload = jwt_handler.verify_token(token)
     except JWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Токен недействителен")
     return payload
 
