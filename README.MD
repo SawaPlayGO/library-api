@@ -57,6 +57,8 @@ alembic upgrade head
 
 ```bash
 uvicorn main:app --reload
+# или
+python main.py
 ```
 
 7. **Регистрация первого пользователя (библиотекаря)**:
