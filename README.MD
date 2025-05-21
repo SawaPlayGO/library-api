@@ -98,6 +98,7 @@ uvicorn main:app --reload
 * `alembic/` — миграции базы данных.
 * `tests/` — тесты Pytest для бизнес-логики и эндпоинтов.
 * `logs/` — папка с логами приложения
+* `.github/` — папка с тестами для Github Actions
 
 ---
 
